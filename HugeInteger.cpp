@@ -39,6 +39,8 @@ HugeInteger::HugeInteger(int n) {
 }
 
 HugeInteger HugeInteger::add(const HugeInteger& h) {
+	// TODO: implement negative support
+
 	int size = (h.value.size() >= value.size()) ? h.value.size() : value.size();
 	int carry = 0, offset, index;
 
