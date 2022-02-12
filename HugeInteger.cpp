@@ -81,8 +81,58 @@ HugeInteger HugeInteger::add(const HugeInteger& h) {
 }
 
 HugeInteger HugeInteger::subtract(const HugeInteger& h) {
-	// TODO
-	return HugeInteger("");
+	const HugeInteger& bigger = compareTo(h) == -1 ? h : *this;
+	const HugeInteger& smaller = compareTo(h) == -1 ? *this : h;
+
+	int size = bigger.value.size();
+
+	int borrow = 0, offset, index, smallIndex;
+	
+	HugeInteger diff = HugeInteger("0");
+	diff.value.reserve(size);
+	for (int i = 0; i < size - 1; i++) diff.value.push_back(0);
+
+	for (offset = 1; offset <= size; offset++) {
+		index = size - offset;
+		smallIndex = smaller.value.size() - offset;
+
+		// std::cout << diff.toString()
+		// 	<< " - " <<
+		// 	offset
+		// 	<< " - " <<
+		// 	index
+		// 	<< " - " <<
+		// 	smallIndex
+		// << std::endl;
+
+		if (smallIndex >= 0) {
+			if (bigger.value[index] >= smaller.value[smallIndex] + borrow) {
+				diff.value[index] = bigger.value[index] - smaller.value[smallIndex] - borrow;
+				borrow = 0;
+			} else {
+				diff.value[index] = bigger.value[index] + 10 - smaller.value[smallIndex] - borrow;
+				borrow = 1;
+			}
+
+			// std::cout <<
+			// 	((value.size() >= offset) ? bigger.value[index] : 0)
+			// << " - " <<
+			// 	((h.value.size() >= offset) ? smaller.value[smallIndex] : 0)
+			// << " = " <<
+			// 	diff.value[index]
+			// << std::endl;
+		} else {
+			diff.value[index] = bigger.value[index] - borrow;
+			borrow = 0;
+			// std::cout <<
+			// 	bigger.value[index]
+			// << " - 0 = " <<
+			// 	diff.value[index]
+			// << std::endl;
+		}
+	}
+
+	return diff;
 }
 
 HugeInteger HugeInteger::multiply(const HugeInteger& h) {
@@ -91,15 +141,33 @@ HugeInteger HugeInteger::multiply(const HugeInteger& h) {
 }
 
 int HugeInteger::compareTo(const HugeInteger& h) {
-	// TODO
+	// Check for sign
+	if (!isNegative && h.isNegative) return 1;
+	if (isNegative && !h.isNegative) return -1;
+
+	// Check for size
+	if (value.size() > h.value.size()) return (isNegative ? -1 : 1);
+	if (value.size() < h.value.size()) return (isNegative ? 1 : -1);
+
+	// Check for each digit
+	for (int i = 0; i < value.size(); i++) {
+		if (value[i] > h.value[i]) return (isNegative ? -1 : 1);
+		if (value[i] < h.value[i]) return (isNegative ? 1 : -1);
+	}
+
 	return 0;
 }
 
 std::string HugeInteger::toString() {
 	std::string str = isNegative ? "-" : "";
 	for (int i = 0; i < value.size(); i++) str += value[i] + '0';
-
 	return str;
+}
+
+int main() {
+	HugeInteger a = HugeInteger("123");
+	HugeInteger b = HugeInteger("2");
+	std::cout << a.subtract(b).toString() << std::endl;
 }
 
 #define MAXNUMINTS 100
