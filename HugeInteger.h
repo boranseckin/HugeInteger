@@ -13,12 +13,13 @@ class HugeInteger
 		// Required methods
 		HugeInteger(const std::string& val);
 		HugeInteger(int n);
-		HugeInteger add(const HugeInteger& h);
-		HugeInteger subtract(const HugeInteger& h) const;
-		HugeInteger multiply(const HugeInteger& h);
+		HugeInteger add(const HugeInteger& h, bool ignoreSign = false) const;
+		HugeInteger subtract(const HugeInteger& h, bool ignoreSign = false) const;
+		HugeInteger multiply(const HugeInteger& h) const;
 		int compareTo(const HugeInteger& h) const;
 		int compareToUnsigned(const HugeInteger& h) const;
-		std::string toString();
+		std::string toString() const;
+		HugeInteger negate();
 };
 
 #endif /* HUGEINTEGER_H_ */

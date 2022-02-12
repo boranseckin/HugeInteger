@@ -38,9 +38,11 @@ HugeInteger::HugeInteger(int n) {
 	for (int i = 0; i < n - 1; i++) value.push_back(std::rand() % 10);
 }
 
-HugeInteger HugeInteger::add(const HugeInteger& h) {
-	if (!isNegative && h.isNegative) return subtract(h);
-	if (isNegative && !h.isNegative) return h.subtract(*this);
+HugeInteger HugeInteger::add(const HugeInteger& h, bool ignoreSign) const {
+	if (!ignoreSign) {
+		if (!isNegative && h.isNegative) return subtract(h, true);
+		if (isNegative && !h.isNegative) return h.subtract(*this, true);
+	}
 
 	int size = (h.value.size() >= value.size()) ? h.value.size() : value.size();
 	int carry = 0, offset, index;
@@ -52,8 +54,6 @@ HugeInteger HugeInteger::add(const HugeInteger& h) {
 	if (isNegative && h.isNegative) sum.isNegative = true;
 
 	for (offset = 1; offset <= size; offset++) {
-		// std::cout << sum.toString() << std::endl;
-
 		index = size - offset;
 
 		if (value.size() >= offset) sum.value[index] += value[value.size() - offset];
@@ -61,29 +61,27 @@ HugeInteger HugeInteger::add(const HugeInteger& h) {
 		if (carry) sum.value[index] += carry--;
 
 		if (sum.value[index] > 9) {
-			// std::cout << "carry" << std::endl;
 			sum.value[index] %= 10;
 			carry++;
 		}
-
-		// std::cout <<
-		// 	((value.size() >= offset) ? value[value.size() - offset] : 0)
-		// << " + " <<
-		// 	((h.value.size() >= offset) ? h.value[h.value.size() - offset] : 0)
-		// << " = " <<
-		// 	sum.value[index]
-		// << std::endl;
 	}
 
-	if (carry) {
-		// std::cout << "carry " << std::endl;
-		sum.value.insert(sum.value.begin(), carry--);
-	}
+	if (carry) sum.value.insert(sum.value.begin(), carry--);
 
 	return sum;
 }
 
-HugeInteger HugeInteger::subtract(const HugeInteger& h) const {
+HugeInteger HugeInteger::subtract(const HugeInteger& h, bool ignoreSign) const {
+	if (!ignoreSign) {
+		if (!isNegative && h.isNegative) return add(h, true);
+		if (isNegative && !h.isNegative) return add(h, true).negate();
+		if (isNegative && h.isNegative) {
+			HugeInteger diff = h.subtract(*this, true);
+			if (h.compareToUnsigned(*this) == 1) diff.negate();
+			return diff;
+		}
+	}
+
 	const HugeInteger& bigger = compareToUnsigned(h) == -1 ? h : *this;
 	const HugeInteger& smaller = compareToUnsigned(h) == -1 ? *this : h;
 
@@ -96,6 +94,7 @@ HugeInteger HugeInteger::subtract(const HugeInteger& h) const {
 	for (int i = 0; i < size - 1; i++) diff.value.push_back(0);
 
 	if (bigger.isNegative) diff.isNegative = true;
+	if (compareTo(h) == -1) diff.isNegative = true;
 
 	for (offset = 1; offset <= size; offset++) {
 		index = size - offset;
@@ -109,14 +108,6 @@ HugeInteger HugeInteger::subtract(const HugeInteger& h) const {
 				diff.value[index] = bigger.value[index] + 10 - smaller.value[smallIndex] - borrow;
 				borrow = 1;
 			}
-
-			// std::cout <<
-			// 	((value.size() >= offset) ? bigger.value[index] : 0)
-			// << " a- " <<
-			// 	((h.value.size() >= offset) ? smaller.value[smallIndex] : 0)
-			// << " = " <<
-			// 	diff.value[index]
-			// << std::endl;
 		} else {
 			if (bigger.value[index] >= borrow) {
 				diff.value[index] = bigger.value[index] - borrow;
@@ -125,12 +116,6 @@ HugeInteger HugeInteger::subtract(const HugeInteger& h) const {
 				diff.value[index] = bigger.value[index] + 10 - borrow;
 				borrow = 1;
 			}
-
-			// std::cout <<
-			// 	bigger.value[index]
-			// << " b- 0 - =" <<
-			// 	diff.value[index]
-			// << std::endl;
 		}
 	}
 
@@ -143,7 +128,7 @@ HugeInteger HugeInteger::subtract(const HugeInteger& h) const {
 	return diff;
 }
 
-HugeInteger HugeInteger::multiply(const HugeInteger& h) {
+HugeInteger HugeInteger::multiply(const HugeInteger& h) const {
 	// TODO
 	return HugeInteger("");
 }
@@ -180,17 +165,16 @@ int HugeInteger::compareToUnsigned(const HugeInteger& h) const {
 	return 0;
 }
 
-std::string HugeInteger::toString() {
+std::string HugeInteger::toString() const {
 	std::string str = isNegative ? "-" : "";
 	for (int i = 0; i < value.size(); i++) str += value[i] + '0';
 	return str;
 }
 
-// int main() {
-// 	HugeInteger a = HugeInteger("432114430203220241100220");
-// 	HugeInteger b = HugeInteger("-6688869798955");
-// 	std::cout << a.add(b).toString() << std::endl;
-// }
+HugeInteger HugeInteger::negate() {
+	isNegative = !isNegative;
+	return *this;
+}
 
 #define MAXNUMINTS 100
 #define MAXRUN 30000
