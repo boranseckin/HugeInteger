@@ -14,9 +14,10 @@ class HugeInteger
 		HugeInteger(const std::string& val);
 		HugeInteger(int n);
 		HugeInteger add(const HugeInteger& h);
-		HugeInteger subtract(const HugeInteger& h);
+		HugeInteger subtract(const HugeInteger& h) const;
 		HugeInteger multiply(const HugeInteger& h);
-		int compareTo(const HugeInteger& h);
+		int compareTo(const HugeInteger& h) const;
+		int compareToUnsigned(const HugeInteger& h) const;
 		std::string toString();
 };
 

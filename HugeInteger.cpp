@@ -39,7 +39,8 @@ HugeInteger::HugeInteger(int n) {
 }
 
 HugeInteger HugeInteger::add(const HugeInteger& h) {
-	// TODO: implement negative support
+	if (!isNegative && h.isNegative) return subtract(h);
+	if (isNegative && !h.isNegative) return h.subtract(*this);
 
 	int size = (h.value.size() >= value.size()) ? h.value.size() : value.size();
 	int carry = 0, offset, index;
@@ -47,6 +48,8 @@ HugeInteger HugeInteger::add(const HugeInteger& h) {
 	HugeInteger sum = HugeInteger("0");
 	sum.value.reserve(size + 1);
 	for (int i = 0; i < size - 1; i++) sum.value.push_back(0);
+
+	if (isNegative && h.isNegative) sum.isNegative = true;
 
 	for (offset = 1; offset <= size; offset++) {
 		// std::cout << sum.toString() << std::endl;
@@ -80,9 +83,9 @@ HugeInteger HugeInteger::add(const HugeInteger& h) {
 	return sum;
 }
 
-HugeInteger HugeInteger::subtract(const HugeInteger& h) {
-	const HugeInteger& bigger = compareTo(h) == -1 ? h : *this;
-	const HugeInteger& smaller = compareTo(h) == -1 ? *this : h;
+HugeInteger HugeInteger::subtract(const HugeInteger& h) const {
+	const HugeInteger& bigger = compareToUnsigned(h) == -1 ? h : *this;
+	const HugeInteger& smaller = compareToUnsigned(h) == -1 ? *this : h;
 
 	int size = bigger.value.size();
 
@@ -92,18 +95,11 @@ HugeInteger HugeInteger::subtract(const HugeInteger& h) {
 	diff.value.reserve(size);
 	for (int i = 0; i < size - 1; i++) diff.value.push_back(0);
 
+	if (bigger.isNegative) diff.isNegative = true;
+
 	for (offset = 1; offset <= size; offset++) {
 		index = size - offset;
 		smallIndex = smaller.value.size() - offset;
-
-		// std::cout << diff.toString()
-		// 	<< " - " <<
-		// 	offset
-		// 	<< " - " <<
-		// 	index
-		// 	<< " - " <<
-		// 	smallIndex
-		// << std::endl;
 
 		if (smallIndex >= 0) {
 			if (bigger.value[index] >= smaller.value[smallIndex] + borrow) {
@@ -116,21 +112,33 @@ HugeInteger HugeInteger::subtract(const HugeInteger& h) {
 
 			// std::cout <<
 			// 	((value.size() >= offset) ? bigger.value[index] : 0)
-			// << " - " <<
+			// << " a- " <<
 			// 	((h.value.size() >= offset) ? smaller.value[smallIndex] : 0)
 			// << " = " <<
 			// 	diff.value[index]
 			// << std::endl;
 		} else {
-			diff.value[index] = bigger.value[index] - borrow;
-			borrow = 0;
+			if (bigger.value[index] >= borrow) {
+				diff.value[index] = bigger.value[index] - borrow;
+				borrow = 0;
+			} else {
+				diff.value[index] = bigger.value[index] + 10 - borrow;
+				borrow = 1;
+			}
+
 			// std::cout <<
 			// 	bigger.value[index]
-			// << " - 0 = " <<
+			// << " b- 0 - =" <<
 			// 	diff.value[index]
 			// << std::endl;
 		}
 	}
+
+	while (diff.value.size() > 1 && diff.value[0] == 0) {
+		diff.value.erase(diff.value.begin());
+	}
+
+	if (diff.value[0] == 0) diff.isNegative = false;
 
 	return diff;
 }
@@ -140,7 +148,7 @@ HugeInteger HugeInteger::multiply(const HugeInteger& h) {
 	return HugeInteger("");
 }
 
-int HugeInteger::compareTo(const HugeInteger& h) {
+int HugeInteger::compareTo(const HugeInteger& h) const {
 	// Check for sign
 	if (!isNegative && h.isNegative) return 1;
 	if (isNegative && !h.isNegative) return -1;
@@ -158,17 +166,31 @@ int HugeInteger::compareTo(const HugeInteger& h) {
 	return 0;
 }
 
+int HugeInteger::compareToUnsigned(const HugeInteger& h) const {
+	// Check for size
+	if (value.size() > h.value.size()) return 1;
+	if (value.size() < h.value.size()) return -1;
+
+	// Check for each digit
+	for (int i = 0; i < value.size(); i++) {
+		if (value[i] > h.value[i]) return 1;
+		if (value[i] < h.value[i]) return -1;
+	}
+
+	return 0;
+}
+
 std::string HugeInteger::toString() {
 	std::string str = isNegative ? "-" : "";
 	for (int i = 0; i < value.size(); i++) str += value[i] + '0';
 	return str;
 }
 
-int main() {
-	HugeInteger a = HugeInteger("123");
-	HugeInteger b = HugeInteger("2");
-	std::cout << a.subtract(b).toString() << std::endl;
-}
+// int main() {
+// 	HugeInteger a = HugeInteger("432114430203220241100220");
+// 	HugeInteger b = HugeInteger("-6688869798955");
+// 	std::cout << a.add(b).toString() << std::endl;
+// }
 
 #define MAXNUMINTS 100
 #define MAXRUN 30000
