@@ -129,8 +129,53 @@ HugeInteger HugeInteger::subtract(const HugeInteger& h, bool ignoreSign) const {
 }
 
 HugeInteger HugeInteger::multiply(const HugeInteger& h) const {
-	// TODO
-	return HugeInteger("");
+	const HugeInteger& bigger = compareToUnsigned(h) == -1 ? h : *this;
+	const HugeInteger& smaller = compareToUnsigned(h) == -1 ? *this : h;
+
+	int carry = 0, shift, offset, bigIndex, smallIndex;
+
+	HugeInteger product = HugeInteger("0");
+	product.value.reserve(bigger.value.size() + 1);
+	for (int i = 0; i < bigger.value.size() - 1; i++) product.value.push_back(0);
+
+	for (shift = 1; shift <= smaller.value.size(); shift++) {
+		smallIndex = smaller.value.size() - shift;
+
+		HugeInteger interm = HugeInteger("0");
+		interm.value.reserve(bigger.value.size() + 1);
+		for (int i = 0; i < bigger.value.size() - 1; i++) interm.value.push_back(0);
+
+		for (offset = 1; offset <= bigger.value.size(); offset++) {
+			bigIndex = bigger.value.size() - offset;
+
+			interm.value[bigIndex] = smaller.value[smallIndex] * bigger.value[bigIndex] + carry;
+
+			if (interm.value[bigIndex] > 9) {
+				carry = interm.value[bigIndex] / 10;
+				interm.value[bigIndex] %= 10;
+			} else {
+				carry = 0;
+			}
+		}
+
+		if (carry) {
+			interm.value.insert(interm.value.begin(), carry);
+			carry = 0;
+		}
+
+		for (int i = 0; i < shift - 1; i++) interm.value.push_back(0);
+		product = product.add(interm);
+	}
+
+	while (product.value.size() > 1 && product.value[0] == 0) {
+		product.value.erase(product.value.begin());
+	}
+
+	if (isNegative && !h.isNegative) product.isNegative = true;
+	if (!isNegative && h.isNegative) product.isNegative = true;
+	if (product.value[0] == 0) product.isNegative = false;
+
+	return product;
 }
 
 int HugeInteger::compareTo(const HugeInteger& h) const {
