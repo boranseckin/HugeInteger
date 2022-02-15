@@ -10,7 +10,6 @@ class HugeInteger
 		bool isNegative;
 
 	public:
-		// Required methods
 		HugeInteger(const std::string& val);
 		HugeInteger(int n);
 		HugeInteger add(const HugeInteger& h, bool ignoreSign = false) const;
