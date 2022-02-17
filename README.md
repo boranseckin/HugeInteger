@@ -1,2 +1,2 @@
 # HugeInteger
-Library for arbitrarily large integer numbers
+Library for making arithmetic operations with arbitrarily large integer numbers.
