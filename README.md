@@ -26,7 +26,7 @@ If the intermediate subtraction result is less than 0, 10 is added to the result
 
 If the resulting number has leading zeros at the beginning, they are removed.
 
-If only one of the operands is negative this method will instead return theh result of the sum of the numbers. If both operands are negative, the first number is subtracted from the second instead.
+If only one of the operands is negative this method will instead return the result of the sum of the numbers. If both operands are negative, the first number is subtracted from the second instead.
 
 ### Multiplication
 In order to subtract two Huge Integers, the two numbers are assigned to two variables called `bigger` and `smaller` relative to their values. These variables are used to reference the numbers throughout the algorithm.
