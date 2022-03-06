@@ -6,8 +6,6 @@
 using namespace std::chrono;
 using namespace boost::multiprecision;
 
-#define MAXNUMINTS 100
-
 double ComparisonTiming(int n) {
 	std::cout << "Timing comparison of " << n << " digit numbers..." << std::endl;
 	system_clock::time_point startTime, endTime;
@@ -15,9 +13,9 @@ double ComparisonTiming(int n) {
 	double runTime = 0.0;
 	double durationMs = 0.0;
 
-	for (int numInts = 0; numInts < MAXNUMINTS; numInts++) {
-		HugeInteger huge1(n);
-		HugeInteger huge2(n);
+	for (int numInts = 1; numInts < n; numInts++) {
+		HugeInteger huge1(numInts);
+		HugeInteger huge2(numInts);
 		startTime = system_clock::now();
 
 		for (int numRun = 0; numRun < 30000; numRun++) {
@@ -27,9 +25,10 @@ double ComparisonTiming(int n) {
 		endTime = system_clock::now();
 		durationMs = (duration<double, std::milli>(endTime - startTime)).count();
 		runTime += durationMs / (double) 30000;
+		std::cout << durationMs / (double) 30000 << std::endl;
 	}
 
-	runTime = runTime / (double) MAXNUMINTS;
+	runTime = runTime / (double) n;
 	return runTime;
 }
 
@@ -40,9 +39,9 @@ double AdditionTiming(int n) {
 	double runTime = 0.0;
 	double durationMs = 0.0;
 
-	for (int numInts = 0; numInts < MAXNUMINTS; numInts++) {
-		HugeInteger huge1(n);
-		HugeInteger huge2(n);
+	for (int numInts = 1; numInts < n; numInts++) {
+		HugeInteger huge1(numInts);
+		HugeInteger huge2(numInts);
 		startTime = system_clock::now();
 
 		for (int numRun = 0; numRun < 30000; numRun++) {
@@ -52,9 +51,10 @@ double AdditionTiming(int n) {
 		endTime = system_clock::now();
 		durationMs = (duration<double, std::milli>(endTime - startTime)).count();
 		runTime += durationMs / (double) 30000;
+		std::cout << durationMs / (double) 30000 << std::endl;
 	}
 
-	runTime = runTime / (double) MAXNUMINTS;
+	runTime = runTime / (double) n;
 	return runTime;
 }
 
@@ -65,9 +65,9 @@ double SubtractionTiming(int n) {
 	double runTime = 0.0;
 	double durationMs = 0.0;
 
-	for (int numInts = 0; numInts < MAXNUMINTS; numInts++) {
-		HugeInteger huge1(n);
-		HugeInteger huge2(n);
+	for (int numInts = 1; numInts < n; numInts++) {
+		HugeInteger huge1(numInts);
+		HugeInteger huge2(numInts);
 		startTime = system_clock::now();
 
 		for (int numRun = 0; numRun < 10000; numRun++) {
@@ -77,9 +77,10 @@ double SubtractionTiming(int n) {
 		endTime = system_clock::now();
 		durationMs = (duration<double, std::milli>(endTime - startTime)).count();
 		runTime += durationMs / (double) 10000;
+		std::cout << durationMs / (double) 10000 << std::endl;
 	}
 
-	runTime = runTime / (double) MAXNUMINTS;
+	runTime = runTime / (double) n;
 	return runTime;
 }
 
@@ -90,9 +91,9 @@ double MultiplicationTiming(int n) {
 	double runTime = 0.0;
 	double durationMs = 0.0;
 
-	for (int numInts = 0; numInts < MAXNUMINTS; numInts++) {
-		HugeInteger huge1(n);
-		HugeInteger huge2(n);
+	for (int numInts = 1; numInts < n; numInts++) {
+		HugeInteger huge1(numInts);
+		HugeInteger huge2(numInts);
 		startTime = system_clock::now();
 
 		for (int numRun = 0; numRun < 500; numRun++) {
@@ -102,9 +103,10 @@ double MultiplicationTiming(int n) {
 		endTime = system_clock::now();
 		durationMs = (duration<double, std::milli>(endTime - startTime)).count();
 		runTime += durationMs / (double) 500;
+		std::cout << numInts << " - " << durationMs / (double) 500 << std::endl;
 	}
 
-	runTime = runTime / (double) MAXNUMINTS;
+	runTime = runTime / (double) n;
 	return runTime;
 }
 
@@ -115,9 +117,9 @@ double BoostComparisonTiming(int n) {
 	double runTime = 0.0;
 	double durationMs = 0.0;
 
-	for (int numInts = 0; numInts < MAXNUMINTS; numInts++) {
-		cpp_int huge1(n);
-		cpp_int huge2(n);
+	for (int numInts = 1; numInts < n; numInts++) {
+		cpp_int huge1(numInts);
+		cpp_int huge2(numInts);
 		startTime = system_clock::now();
 
 		for (int numRun = 0; numRun < 30000; numRun++) {
@@ -127,9 +129,10 @@ double BoostComparisonTiming(int n) {
 		endTime = system_clock::now();
 		durationMs = (duration<double, std::milli>(endTime - startTime)).count();
 		runTime += durationMs / (double) 30000;
+		std::cout << durationMs / (double) 30000 << std::endl;
 	}
 
-	runTime = runTime / (double) MAXNUMINTS;
+	runTime = runTime / (double) n;
 	return runTime;
 }
 
@@ -140,9 +143,9 @@ double BoostAdditionTiming(int n) {
 	double runTime = 0.0;
 	double durationMs = 0.0;
 
-	for (int numInts = 0; numInts < MAXNUMINTS; numInts++) {
-		cpp_int huge1(n);
-		cpp_int huge2(n);
+	for (int numInts = 1; numInts < n; numInts++) {
+		cpp_int huge1(numInts);
+		cpp_int huge2(numInts);
 		startTime = system_clock::now();
 
 		for (int numRun = 0; numRun < 30000; numRun++) {
@@ -152,9 +155,10 @@ double BoostAdditionTiming(int n) {
 		endTime = system_clock::now();
 		durationMs = (duration<double, std::milli>(endTime - startTime)).count();
 		runTime += durationMs / (double) 30000;
+		std::cout << durationMs / (double) 30000 << std::endl;
 	}
 
-	runTime = runTime / (double) MAXNUMINTS;
+	runTime = runTime / (double) n;
 	return runTime;
 }
 
@@ -165,9 +169,9 @@ double BoostSubtractionTiming(int n) {
 	double runTime = 0.0;
 	double durationMs = 0.0;
 
-	for (int numInts = 0; numInts < MAXNUMINTS; numInts++) {
-		cpp_int huge1(n);
-		cpp_int huge2(n);
+	for (int numInts = 1; numInts < n; numInts++) {
+		cpp_int huge1(numInts);
+		cpp_int huge2(numInts);
 		startTime = system_clock::now();
 
 		for (int numRun = 0; numRun < 10000; numRun++) {
@@ -177,9 +181,10 @@ double BoostSubtractionTiming(int n) {
 		endTime = system_clock::now();
 		durationMs = (duration<double, std::milli>(endTime - startTime)).count();
 		runTime += durationMs / (double) 10000;
+		std::cout << durationMs / (double) 10000 << std::endl;
 	}
 
-	runTime = runTime / (double) MAXNUMINTS;
+	runTime = runTime / (double) n;
 	return runTime;
 }
 
@@ -190,38 +195,39 @@ double BoostMultiplicationTiming(int n) {
 	double runTime = 0.0;
 	double durationMs = 0.0;
 
-	for (int numInts = 0; numInts < MAXNUMINTS; numInts++) {
-		cpp_int huge1(n);
-		cpp_int huge2(n);
+	for (int numInts = 0; numInts < n; numInts++) {
+		cpp_int huge1(numInts);
+		cpp_int huge2(numInts);
 		startTime = system_clock::now();
 
-		for (int numRun = 0; numRun < 500; numRun++) {
+		for (int numRun = 1; numRun < 500; numRun++) {
 			cpp_int huge3 = huge1 * huge2;
 		}
 
 		endTime = system_clock::now();
 		durationMs = (duration<double, std::milli>(endTime - startTime)).count();
 		runTime += durationMs / (double) 500;
+		std::cout << durationMs / (double) 500 << std::endl;
 	}
 
-	runTime = runTime / (double) MAXNUMINTS;
+	runTime = runTime / (double) n;
 	return runTime;
 }
 
 int main() {
-	std::cout << "Timing arithmetic operations on " << MAXNUMINTS << " digit numbers..." << std::endl;
+	std::cout << "Timing arithmetic operations..." << std::endl;
 
-	double time1 = ComparisonTiming(500);
-	double time2 = BoostComparisonTiming(500);
+	// double time1 = ComparisonTiming(500);
+	// double time2 = BoostComparisonTiming(500);
 
-	double time3 = AdditionTiming(500);
-	double time4 = BoostAdditionTiming(500);
+	// double time3 = AdditionTiming(500);
+	// double time4 = BoostAdditionTiming(500);
 
-	double time5 = SubtractionTiming(500);
-	double time6 = BoostSubtractionTiming(500);
+	// double time5 = SubtractionTiming(500);
+	// double time6 = BoostSubtractionTiming(500);
 
-	double time7 = MultiplicationTiming(100);
-	double time8 = BoostMultiplicationTiming(100);
+	double time7 = MultiplicationTiming(500);
+	double time8 = BoostMultiplicationTiming(500);
 
 	std::cout << std::endl;
 

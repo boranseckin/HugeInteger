@@ -139,7 +139,6 @@ HugeInteger HugeInteger::subtract(const HugeInteger& h, bool ignoreSign) const {
 	if (bigger.isNegative) diff.isNegative = true;
 	if (compareTo(h) == -1) diff.isNegative = true;
 
-
 	/**
 	 * Starting from the least significant digit, subtract smaller from bigger.
 	 * Subtract the borrow from the last subtraction (if any).
