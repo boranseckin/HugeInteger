@@ -217,14 +217,14 @@ double BoostMultiplicationTiming(int n) {
 int main() {
 	std::cout << "Timing arithmetic operations..." << std::endl;
 
-	// double time1 = ComparisonTiming(500);
-	// double time2 = BoostComparisonTiming(500);
+	double time1 = ComparisonTiming(500);
+	double time2 = BoostComparisonTiming(500);
 
-	// double time3 = AdditionTiming(500);
-	// double time4 = BoostAdditionTiming(500);
+	double time3 = AdditionTiming(500);
+	double time4 = BoostAdditionTiming(500);
 
-	// double time5 = SubtractionTiming(500);
-	// double time6 = BoostSubtractionTiming(500);
+	double time5 = SubtractionTiming(500);
+	double time6 = BoostSubtractionTiming(500);
 
 	double time7 = MultiplicationTiming(500);
 	double time8 = BoostMultiplicationTiming(500);
