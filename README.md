@@ -1,7 +1,6 @@
 # HugeInteger
 Library for making arithmetic operations with arbitrarily large integer numbers.
 
-### Huge Integer
 This implementation of HugeInteger uses a vector to store each digit of the number as an integer. Additionally, it stores a boolean value to determine the sign of the integer. The number of digits of the integer can be found using the `size()` method of the vector.
 
 ### Comparison
@@ -41,3 +40,6 @@ If the intermediate product results in a number bigger than 9, the remainder of 
 The sign of the resulting Huge Integer is set to negative if only one of the operands is negative.
 
 If the resulting number has leading zeros at the beginning, they are removed.
+
+### Experiment
+Runtime data collected for all the methods (and their equivalents in Boost multiprecision) can be found at this [link](https://mcmasteru365-my.sharepoint.com/:x:/g/personal/seckinb_mcmaster_ca/EYajD46skmFNgNcxUH6FRQ4BIEHwaHOLtr5MbfW3GGCmPg?e=wmQQVN).
